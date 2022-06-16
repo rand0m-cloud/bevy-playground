@@ -13,7 +13,7 @@ pub const RESOLUTION: f32 = 16.0 / 9.0;
 
 #[derive(Debug, Component, Inspectable)]
 pub struct Player {
-    is_grounded: bool,
+    is_grounded: u64,
 }
 
 #[derive(Debug, Component)]
@@ -96,7 +96,7 @@ fn create_player(mut commands: Commands) {
     };
     commands
         .spawn_bundle(sprite)
-        .insert(Player { is_grounded: false })
+        .insert(Player { is_grounded: 0 })
         .insert(Name::new("main_player"))
         .insert(RigidBody::Dynamic)
         .insert(PhysicMaterial {
@@ -128,7 +128,11 @@ fn player_grounded_system(
 
         if floor_collided.is_some() && player_collided.is_some() {
             let mut player = player_query.single_mut();
-            player.is_grounded = matches!(collision, CollisionEvent::Started(_, _));
+            player.is_grounded = if matches!(collision, CollisionEvent::Started(_, _)) {
+                player.is_grounded + 1
+            } else {
+                player.is_grounded - 1
+            };
             return;
         }
     }
@@ -139,7 +143,7 @@ fn player_input_system(
     input: Res<Input<KeyCode>>,
 ) {
     let (player, mut velocity) = player_query.single_mut();
-    if player.is_grounded && input.just_pressed(KeyCode::Space) {
+    if player.is_grounded > 0 && input.just_pressed(KeyCode::Space) {
         *velocity = velocity.with_linear(-Vec3::Y);
     }
 }
