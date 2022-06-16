@@ -1,5 +1,3 @@
-#![allow(unused_parens)]
-
 use bevy::render::camera::Camera2d;
 use bevy::{prelude::*, render::camera::ScalingMode, window::PresentMode};
 use bevy_inspector_egui::{
@@ -8,8 +6,8 @@ use bevy_inspector_egui::{
 use heron::prelude::*;
 
 pub const CLEAR: Color = Color::rgb(0.3, 0.3, 0.3);
-pub const HEIGHT: f32 = 900.0;
-pub const RESOLUTION: f32 = 16.0 / 9.0;
+pub const HEIGHT: f32 = 480.0;
+pub const RESOLUTION: f32 = 4.0 / 3.0;
 
 #[derive(Debug, Component, Inspectable)]
 pub struct Player {
@@ -111,8 +109,8 @@ fn create_player(mut commands: Commands) {
 }
 
 fn player_grounded_system(
-    mut player_query: Query<(&mut Player)>,
-    floor_query: Query<(&Sprite), (With<Floor>)>,
+    mut player_query: Query<&mut Player>,
+    floor_query: Query<&Sprite, With<Floor>>,
     mut events: EventReader<CollisionEvent>,
 ) {
     for collision in events.iter() {
@@ -149,8 +147,8 @@ fn player_input_system(
 }
 
 fn player_move_camera(
-    player_query: Query<(&Transform), (With<Player>)>,
-    mut camera_query: Query<(&mut Transform), (With<Camera2d>, Without<Player>)>,
+    player_query: Query<&Transform, With<Player>>,
+    mut camera_query: Query<&mut Transform, (With<Camera2d>, Without<Player>)>,
 ) {
     let player_transform = player_query.single().translation;
     let camera = &mut camera_query.single_mut().translation;
