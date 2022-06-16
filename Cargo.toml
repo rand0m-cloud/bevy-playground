@@ -3,6 +3,25 @@ name = "bevy-playground"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
 
 [dependencies]
+bevy = { version = "0.7", features = [
+    "bevy_gilrs",
+    "bevy_winit",
+    "render",
+    "png",
+    "hdr",
+    "vorbis",
+    "x11",
+    "filesystem_watcher",
+    "trace",
+    "dynamic",
+     ] }
+bevy-inspector-egui = "0.10"
+heron = { version = "3.1.0", features = ["2d", "debug-2d"] }
